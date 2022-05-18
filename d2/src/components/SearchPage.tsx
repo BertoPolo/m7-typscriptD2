@@ -1,19 +1,27 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, ChangeEvent } from "react"
 import { Form } from "react-bootstrap"
 
 const SearchPage = () => {
-  const [music, setMusic] = useState()
-  const [query, setQuery] = useState()
+  const [music, setMusic] = useState<ReturnQuery[]>([])
+  const [query, setQuery] = useState("")
 
   useEffect(() => {
     getMusic()
   }, [])
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
+  }
+
   const getMusic = async () => {
-    const response = await fetch(`https://striveschool-api.herokuapp.com/api/deezer/search?q=${query}`)
-    const { data } = await response.json()
-    setMusic(data)
-    console.log(music)
+    try {
+      const response = await fetch(`https://striveschool-api.herokuapp.com/api/deezer/search?q=${query}`)
+      const { data } = await response.json()
+      setMusic(data)
+      console.log(music)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   interface ReturnQuery {
@@ -62,7 +70,7 @@ const SearchPage = () => {
       <Form>
         <Form.Group>
           <Form.Label>Band</Form.Label>
-          <Form.Control type="text" onChange={(e) => setQuery(e.target.value)} placeholder="Enter Band" />
+          <Form.Control type="text" onChange={handleChange} placeholder="Enter Band" />
         </Form.Group>
       </Form>
     </>
